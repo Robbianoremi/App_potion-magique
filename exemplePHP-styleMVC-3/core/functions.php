@@ -151,7 +151,9 @@ function displayIngredients() { // Fonction pour afficher les ingrédients
   $stmt->execute(); // Exécution de la requête
   $ingredients = $stmt->fetchAll(PDO::FETCH_ASSOC); // Récupération de tous les résultats dans un tableau associatif
   foreach ($ingredients as $ingredient) { // Parcours du tableau des résultats
-    echo '<li class="list-group-item">' . $ingredient['nom'] . '</li>'; // Affichage de chaque ingrédient
+    echo '<ul class="list-group">';
+    echo '<li class="list-group-item border-2 m-1 ">' . $ingredient['nom'] . ' : ' . $ingredient['propriete'] . '</li>'; // Affichage de chaque ingrédient
+    echo '</ul>';
   }
   }   
 
