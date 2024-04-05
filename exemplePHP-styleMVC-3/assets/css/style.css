@@ -1,0 +1,6 @@
+.list{
+    height: 50vh;
+}
+.list-user{
+    overflow-y: scroll;
+}
