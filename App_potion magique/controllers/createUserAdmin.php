@@ -21,16 +21,14 @@ if (isset($_POST['submit'])) { // Vérification de la soumission du formulaire
         exit; // Arrêt du script
     }
 
-    $userId = createUser($_POST['name'], $_POST['email'], $_POST['password'], $_POST['niveauMagie']); // Création de l'utilisateur
+    $userId = createUserAdmin($_POST['name'], $_POST['email'], $_POST['password'], $_POST['niveauMagie'], $_POST['role']); // Création de l'utilisateur
     if ($userId) { // Si l'utilisateur est créé
-        $_SESSION['profil'] = ['name' => $_POST['name'], 'email' => $_POST['email'], 'idusers' => $userId['userId'], 'roles' => [$userId['roleLevel']]]; // Enregistrement des informations de l'utilisateur dans la session
-        $_SESSION['flash']['success'] = "Bienvenue " . $_POST['name'] . " !"; // Enregistrement du message de succès dans la session
-        header('Location: ../user/profil'); // Redirection vers la page de profil
+        $_SESSION['flash']['success'] = "Utlisateur enregisté !"; // Enregistrement du message de succès dans la session
+        header('Location: ../admin/admin');
         exit; // Arrêt du script
     } else {
         $_SESSION['flash']['danger'] = "Une erreur s'est produite lors de l'inscription."; // Enregistrement du message d'erreur dans la session
-        header('Location: ../user/register'); // Redirection vers la page d'inscription
-        exit; // Arrêt du script
+        header('Location: ../admin/admin'); // Redirection vers la page d'inscription
     }
 }
 

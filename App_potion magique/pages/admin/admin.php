@@ -30,6 +30,33 @@ include '../partials/menu.php'; // Inclusion du fichier du menu d'administration
             <?php displayUsersAdmin(); // Appel de la fonction pour afficher les utilisateurs ?>
         </div>
     </div>
+
+    <div class="row">
+<div class="col-6 m-auto">
+    <?php displayMessage(); // Appel de la fonction pour afficher les messages $_SESSION['flash'] ?>
+    <form method="POST" action="../controllers/createUserAdmin.php">
+                <div class="mb-3">
+                    <label for="name" class="form-label fw-bold">Nom</label>
+                    <input type="text" name="name" id="name" class="form-control" >
+                </div>
+                <div class="mb-3">
+                    <label for="email" class="form-label fw-bold">Email</label>
+                    <input type="email" name="email" id="email" class="form-control" >
+                </div>
+                <div class="mb-3">
+                <?php displayMagicalNiveau();?><br>
+                <?php displayRoles();?>
+                </div>
+                <div class="mb-4">
+                    <label for="password" class="form-label fw-bold">Password</label>
+                    <input type="password" name="password" id="password" class="form-control">
+                </div>
+                <div class="text-center">
+                    <button type="submit" name="submit" class="btn btn-success px-3 py-2">Inscription</button>
+                </div>
+            </form>
+</div>
+    </div>
 </div>
 
 <?php
