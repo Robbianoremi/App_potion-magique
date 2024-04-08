@@ -12,7 +12,7 @@ include '../partials/menu.php'; // Inclusion du fichier du menu d'administration
 <div class="container-fluid text-center">
     <div class="row">
         <div class="col-6 m-auto">
-        <h1 class="my-3">Bonjour Administrateur <?= $user['name'] ?></h1>
+        <h1 class="my-3">Bonjour Administrateur <?= $user['nom'] ?></h1>
         <?php displayMessage(); // Appel de la fonction pour afficher les messages $_SESSION['flash'] ?>
         </div>
     </div>

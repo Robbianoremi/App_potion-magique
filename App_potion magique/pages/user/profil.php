@@ -25,9 +25,13 @@
 <div class="row pt-5 my-5">
         <div class="col-6 m-auto list p-3 mt-3 border-bottom border-top border-success-subtle border-5"> 
         <h2 class="fs-3 mb-4">Liste des ingrédients</h2>
-            <div class="list-ingredient">
-                <?php displayIngredients(); ?> <!-- Appel de la fonction pour afficher les ingredients -->
-            </div> 
+            <div class="ingredients">
+                <?php displayingredients(); ?> <!-- Appel de la fonction pour afficher les ingredients -->
+            </div>
+            <div class="effets pt-3">
+                <?php displayeffets(); ?> <!-- Appel de la fonction pour afficher les ingredients -->
+            </div>
+            
         </div>
     </div>
 <?php

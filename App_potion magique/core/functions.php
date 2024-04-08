@@ -50,10 +50,10 @@ function displayUsersAdmin()
   echo '<tbody class="list-user">';
   foreach ($users as $user) {
     echo '<tr>';
-    echo '<td>' . htmlspecialchars($user['name']) . '</td>';
+    echo '<td>' . htmlspecialchars($user['nom']) . '</td>';
     echo '<td>' . htmlspecialchars($user['email']) . '</td>';
     echo '<td>' . htmlspecialchars($user['roles']) . '</td>';
-    echo '<td><a href="../controllers/deleteUser.php?id=' . $user['idusers'] . '" class="btn btn-danger btn-sm">Supprimer</a></td>';
+    echo '<td><a href="../controllers/deleteUser.php?id=' . $user['idutilisateur'] . '" class="btn btn-danger btn-sm">Supprimer</a></td>';
     echo '</tr>';
   }
   echo '</tbody>';
@@ -150,21 +150,35 @@ function displayIngredients() { // Fonction pour afficher les ingrédients
   $stmt = $pdo->prepare($sql); // Préparation de la requête
   $stmt->execute(); // Exécution de la requête
   $ingredients = $stmt->fetchAll(PDO::FETCH_ASSOC); // Récupération de tous les résultats dans un tableau associatif
+  echo '<select class="form-select" name="ingredient" id="ingredient" required>'; // Début du marquage HTML pour la liste déroulante
+  echo '<option value="">Choisissez un ingrédient</option>'; // Option par défaut
   foreach ($ingredients as $ingredient) { // Parcours du tableau des résultats
-    echo '<ul class="list-group">';
-    echo '<li class="list-group-item border-2 m-1 ">' . $ingredient['nom'] . ' : ' . $ingredient['propriete'] . '</li>'; // Affichage de chaque ingrédient
-    echo '</ul>';
+    echo '<option value="' . $ingredient['idingredient'] . '">' . $ingredient['nom'] . '</option>'; // Affichage de chaque ingrédient
+
+ 
+
   }
+  echo '</select>';
   }   
 
+function displayeffets() { // Fonction pour afficher les effets
+  global $pdo; // Utilisez l'objet PDO que vous avez été dans db.php
+  $sql = "SELECT * FROM effet"; // Requête SQL pour obtenir tous les effets
+  $stmt = $pdo->prepare($sql); // Préparation de la requête
+  $stmt->execute(); // Exécution de la requête
+  $effets = $stmt->fetchAll(PDO::FETCH_ASSOC); // Récupération de tous les résultats dans un tableau associatif
+  echo '<select class="form-select" name="effet" id="effet" required>'; // Début du marquage HTML pour la liste déroulante
+  echo '<option value="">Effet</option>'; // Option par défaut
+  foreach ($effets as $effet) { // Parcours du tableau des résultats
+    echo '<option value="' . $effet['ideffet'] . '">' . $effet['description'] . '</option>'; // Affichage de chaque effet
+
+  }
+
+  }
 
 
 
-
-
-
-function getUserByEmail($email)
-{
+function getUserByEmail($email) {
   global $pdo;
   try {
     // Préparation de la requête pour récupérer l'utilisateur et ses rôles dans une seule requête
@@ -191,13 +205,14 @@ function getUserByEmail($email)
 function createUser($name, $email, $password, $idMagie)
 { // Fonction pour créer un utilisateur
   global $pdo; // Utilisez l'objet PDO que vous avez créé dans db.php
+  $date = 'Y-m-d H:i:s';
   $hashPass = password_hash($password, PASSWORD_DEFAULT); // Hachage du mot de passe
   $sql = "INSERT INTO utilisateur (nom, email, motDePasse, dateInscription, niveauMagie_idniveauMagie) VALUES (:name, :email, :password, :dateInscription, :idniveauMagie)"; // Requête SQL pour insérer un utilisateur
   $stmt = $pdo->prepare($sql); // Préparation de la requête
   $stmt->bindParam(':name', $name); // Liaison de la variable $name à la requête
   $stmt->bindParam(':email', $email); // Liaison de la variable $email à la requête
   $stmt->bindParam(':password', $hashPass); // Liaison de la variable $hashPass à la requête
-  $stmt->bindParam(':dateInscription', date('Y-m-d H:i:s')); // Liaison de la date d'inscription à la requête
+  $stmt->bindParam(':dateInscription', $date); // Liaison de la date d'inscription à la requête
   $stmt->bindParam(':idniveauMagie', $idMagie); // Liaison de la variable $idMagie à la requête
   if ($stmt->execute()) { // Si la requête s'exécute
     $roleLevel = 1; // Niveau de rôle pour l'utilisateur

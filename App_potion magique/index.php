@@ -17,6 +17,7 @@ include 'pages/partials/menu.php'; // Inclusion du fichier du menu
         <?php displayMessage(); // Appel de la fonction pour afficher les messages $_SESSION['flash'] ?>
         </div>
     </div>
+
     <div class="row">
         <div class="col-6 m-auto list p-3 mt-3 border-bottom border-top border-success-subtle border-5"> 
         <h2 class="fs-3 mb-4">Liste des utilisateurs par le dernier utilisateur inscrit</h2>

@@ -18,7 +18,6 @@ if (isset($_POST['submit'])) {
     }
     // Récupérer l'utilisateur depuis la base de données
     $user = getUserByEmail($email); // Récupération de l'utilisateur par son email
-   
     if ($user && password_verify($password, $user['motDePasse'])) { 
         // Le mot de passe est correct, on crée les données de la session
         $_SESSION['profil'] = $user; // Stocker les infos utilisateur dans la session
