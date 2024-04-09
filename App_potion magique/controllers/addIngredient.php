@@ -8,19 +8,18 @@
   
   if (isset($_POST['submit'])) {
       $name = $_POST['name'];
-      $description = $_POST['description'];
       $propriete = $_POST['propriete'];
       $type = $_POST['type'];
       $rarete = $_POST['rarete'];
      
 
-      if (empty($name) || empty($description) || empty($quantite)) {
+      if (empty($name) || empty($propriete) || empty($type) || empty($rarete)) {
           $_SESSION['flash']['danger'] = 'Veuillez remplir tous les champs';
           header('Location: ../user/profil');
           exit;
       }
   
-     createIngredient($name, $propriete, $type, $rarete );
+     createIngredient($name, $propriete, $type, $rarete);
       $_SESSION['flash']['success'] = 'Ingredient ajoute avec succes';
       header('Location: ../user/profil');
       exit;
