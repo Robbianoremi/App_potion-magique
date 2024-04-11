@@ -7,6 +7,7 @@ $currentPage = basename($_SERVER['PHP_SELF']); // Récupération du nom de la pa
 <?php else :?>
 <script src="../node_modules/bootstrap/dist/js/bootstrap.js"></script>
 <script src="../assets/js/main.js"></script>
+<script src="../assets/js/potion.js"></script>
 <?php endif; ?>
 </body>
 </html>

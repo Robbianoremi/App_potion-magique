@@ -60,8 +60,10 @@ function displayUsersAdmin()
   echo '</table>';
 }
 
-function createUserAdmin($name, $email, $password, $idMagie, $role){ // Fonction pour ajouter un utilisateur
-  $date = date('Y-m-d H:i:s');  $hashPass = password_hash($password, PASSWORD_DEFAULT); // Hachage du mot de passe
+function createUserAdmin($name, $email, $password, $idMagie, $role)
+{ // Fonction pour ajouter un utilisateur
+  $date = date('Y-m-d H:i:s');
+  $hashPass = password_hash($password, PASSWORD_DEFAULT); // Hachage du mot de passe
   global $pdo; // Utilisez l'objet PDO que vous avez trouvé dans db.php
   $sql = "INSERT INTO utilisateur (nom, email, motDePasse, dateInscription, niveauMagie_idniveauMagie) VALUES (:name, :email, :password, :date, :niveauMagie)"; // Requête SQL pour ajouter un utilisateur
   $stmt = $pdo->prepare($sql); // Préparation de la requête
@@ -79,7 +81,7 @@ function createUserAdmin($name, $email, $password, $idMagie, $role){ // Fonction
   $stmt->bindParam(':roleId', $role); // Liaison de l'ID du role à la requête
   $stmt->execute(); // Exécution de la requête
 
-if($role == 2){
+  if ($role == 2) {
     $role = 1;
     $sql = "INSERT INTO utilisateur_has_roleUtilisateur(utilisateur_idutilisateur, roleUtilisateur_idroleUtilisateur) VALUES (:userId, :roleId)"; // Requête SQL pour lier un utilisateur à un role
     $stmt = $pdo->prepare($sql); // Préparation de la requête
@@ -133,9 +135,25 @@ function checkLogedOut()
   }
   return null;
 }
+function createPotion($name, $nMagie, $description, $duree, $userId)
+{
+  global $pdo;
+  $sql = "INSERT INTO potionmagique (nom,description, tempsPreparation, utilisateur_idutilisateur,niveauMagie_idniveauMagie) VALUES (:name, :description, :duree, :userId, :idniveauMagie)";
+  $stmt = $pdo->prepare($sql);
+  $stmt->bindParam(':name', $name);
+  $stmt->bindParam(':description', $description);
+  $stmt->bindParam(':duree', $duree);
+  $stmt->bindParam(':userId', $userId);
+  $stmt->bindParam(':idniveauMagie', $nMagie);
+  if ($stmt->execute()) {
+    $idpotion = $pdo->lastInsertId();
+    return $idpotion;
+  }
+  return false;
+}
 
-
-function addIngredient(){
+function addIngredient()
+{
   global $pdo;
   $sql = "SELECT * FROM ingredient";
   $stmt = $pdo->prepare($sql);
@@ -149,7 +167,8 @@ function addIngredient(){
   echo '</select>';
 }
 
-function displayRoles(){
+function displayRoles()
+{
   global $pdo;
   $sql = "SELECT * FROM roleUtilisateur";
   $stmt = $pdo->prepare($sql);
@@ -179,25 +198,25 @@ function displayMessage()
 
 function displayPotion()
 {
-    global $pdo;
-    $sql = "SELECT potionmagique.nom, GROUP_CONCAT(effet.description SEPARATOR ', ' ) AS effets
+  global $pdo;
+  $sql = "SELECT potionmagique.nom, GROUP_CONCAT(effet.description SEPARATOR ', ' ) AS effets
         FROM potionmagique
         JOIN potionmagique_has_effet ON potionmagique.idpotionmagique = potionmagique_has_effet.potionmagique_idpotionmagique
         JOIN effet ON potionmagique_has_effet.effet_ideffet = effet.ideffet
         GROUP BY idpotionmagique";
-    $stmt = $pdo->prepare($sql);
-    $stmt->execute();
-    $potions = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    echo '<select class="form-select" name="potion" id="potion" required>'; // Début du marquage HTML pour la liste déroulante
-    echo '<option value="">Choisir une potion</option>'; // Option par défaut
-    foreach ($potions as $potion) { // Parcours du tableau des résultats
-  
-      echo '<option title="' . htmlspecialchars($potion['description']) . '" value="' . $potion['idpotionmagique'] . '">' . $potion['nom'] . '</option>';
-    }
-    echo '</select>';
-   
+  $stmt = $pdo->prepare($sql);
+  $stmt->execute();
+  $potions = $stmt->fetchAll(PDO::FETCH_ASSOC);
+  echo '<select class="form-select" name="potion" id="potion" required>'; // Début du marquage HTML pour la liste déroulante
+  echo '<option value="">Choisir une potion</option>'; // Option par défaut
+  foreach ($potions as $potion) { // Parcours du tableau des résultats
+
+    echo '<option title="' . htmlspecialchars($potion['description']) . '" value="' . $potion['idpotionmagique'] . '">' . $potion['nom'] . '</option>';
+  }
+  echo '</select>';
 }
-function displayIngredients() { // Fonction pour afficher les ingrédients
+function displayIngredients()
+{ // Fonction pour afficher les ingrédients
   global $pdo; // Utilisez l'objet PDO que vous avez créé dans db.php
   $sql = "SELECT * FROM ingredient"; // Requête SQL pour obtenir tous les ingrédients
   $stmt = $pdo->prepare($sql); // Préparation de la requête
@@ -210,9 +229,10 @@ function displayIngredients() { // Fonction pour afficher les ingrédients
     echo '<option title="' . htmlspecialchars($ingredient['propriete']) . '" value="' . $ingredient['idingredient'] . '">' . $ingredient['nom'] . '</option>';
   }
   echo '</select>';
-  }   
+}
 
-function displayeffets() { // Fonction pour afficher les effets
+function displayeffets()
+{ // Fonction pour afficher les effets
   global $pdo; // Utilisez l'objet PDO que vous avez été dans db.php
   $sql = "SELECT * FROM effet"; // Requête SQL pour obtenir tous les effets
   $stmt = $pdo->prepare($sql); // Préparation de la requête
@@ -224,76 +244,78 @@ function displayeffets() { // Fonction pour afficher les effets
     echo '<option title="' . htmlspecialchars($effet['description']) . '" value="' . $effet['ideffet'] . '">' . $effet['nom'] . '</option>'; // Affichage de chaque effet
 
   }
-echo '</select>';
+  echo '</select>';
+}
+
+function displayOptionNiveauMagie()
+{
+  global $pdo;
+  $sql = "SELECT niveau, description, idniveauMagie FROM niveauMagie ";
+  $stmt = $pdo->prepare($sql);
+  $stmt->execute();
+  $niveaux = $stmt->fetchAll(PDO::FETCH_ASSOC);
+  foreach ($niveaux as $niveau) {
+    echo '<option value="' . $niveau['idniveauMagie'] . '">' . $niveau['niveau'] . '</option>';
   }
+}
 
-  function displayOptionNiveauMagie(){
-    global $pdo;
-    $sql = "SELECT niveau, description, idniveauMagie FROM niveauMagie ";
-    $stmt = $pdo->prepare($sql);
-    $stmt->execute();
-    $niveaux = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    foreach ($niveaux as $niveau) {
-      echo '<option value="' . $niveau['idniveauMagie'] . '">' . $niveau['niveau'] . '</option>';
-    }
-
+function displayOptionEffets()
+{
+  global $pdo;
+  $sql = "SELECT ideffet, nom, description FROM effet";
+  $stmt = $pdo->prepare($sql);
+  $stmt->execute();
+  $effets = $stmt->fetchAll(PDO::FETCH_ASSOC);
+  echo '<option value="">Choisissez un effet</option>';
+  foreach ($effets as $effet) {
+    echo '<option value="' . $effet['ideffet'] . '">' . $effet['nom'] . '</option>';
   }
+}
 
-  function displayOptionEffets() {
-    global $pdo;
-    $sql = "SELECT ideffet, nom, description FROM effet";
-    $stmt = $pdo->prepare($sql);
-    $stmt->execute();
-    $effets = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    echo '<option value="">Choisissez un effet</option>';
-    foreach ($effets as $effet) {
-      echo '<option value="' . $effet['ideffet'] . '">' . $effet['nom'] . '</option>';
-    }
+function displayOptionIngredients()
+{
+  global $pdo;
+  $sql = "SELECT idingredient, nom FROM ingredient";
+  $stmt = $pdo->prepare($sql);
+  $stmt->execute();
+  $ingredients = $stmt->fetchAll(PDO::FETCH_ASSOC);
+  echo '<option value="">Choisissez un ingredient</option>';
+  foreach ($ingredients as $ingredient) {
+    echo '<option value="' . $ingredient['idingredient'] . '">' . $ingredient['nom'] . '</option>';
   }
+}
 
-  function displayOptionIngredients() {
-    global $pdo;
-    $sql = "SELECT idingredient, nom FROM ingredient";
-    $stmt = $pdo->prepare($sql);
-    $stmt->execute();
-    $ingredients = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    echo '<option value="">Choisissez un ingredient</option>';
-    foreach ($ingredients as $ingredient) {
-      echo '<option value="' . $ingredient['idingredient'] . '">' . $ingredient['nom'] . '</option>';
-    }
+function displayOptionUniteMesure()
+{
+  global $pdo;
+  $sql = "SELECT iduniteMesure, nom FROM uniteMesure";
+  $stmt = $pdo->prepare($sql);
+  $stmt->execute();
+  $unites = $stmt->fetchAll(PDO::FETCH_ASSOC);
+  echo '<option value="">Choisissez une unite de mesure</option>';
+  foreach ($unites as $unite) {
+    echo '<option value="' . $unite['iduniteMesure'] . '">' . $unite['nom'] . '</option>';
   }
+}
 
-  function displayOptionUniteMesure() {
-    global $pdo;
-    $sql = "SELECT iduniteMesure, nom FROM uniteMesure";
-    $stmt = $pdo->prepare($sql);
-    $stmt->execute();
-    $unites = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    echo '<option value="">Choisissez une unite de mesure</option>';
-    foreach ($unites as $unite) {
-      echo '<option value="' . $unite['iduniteMesure'] . '">' . $unite['nom'] . '</option>';
-    }
-  }
-
-function rareteIngredient(){
+function rareteIngredient()
+{
   global $pdo;
   $sql = "SELECT rarete FROM ingredient GROUP BY rarete";
   $stmt = $pdo->prepare($sql);
   $stmt->execute();
   $raretes = $stmt->fetchAll(PDO::FETCH_ASSOC);
-  echo '<label class="form-label fw-bold"> rarete </label>';
+  echo '<label class="form-label fw-bold"> Rarete </label>';
   echo '<select class="form-control" name="rarete"> ';
-  echo '<option value=""> choisissez la rarete </option>' ;
+  echo '<option value=""> choisissez la rarete </option>';
   foreach ($raretes as $rarete) {
     echo '<option value="' . $rarete['rarete'] . '">' . $rarete['rarete'] . '</option>';
-
   }
   echo '</select>';
-
-  
 }
 
-function getUserByEmail($email) {
+function getUserByEmail($email)
+{
   global $pdo;
   try {
     // Préparation de la requête pour récupérer l'utilisateur et ses rôles dans une seule requête
@@ -346,7 +368,8 @@ function createUser($name, $email, $password, $idMagie)
   }
   return false; // Retourne faux si la requête échoue
 }
-function createEffet($name, $description, $duree){
+function createEffet($name, $description, $duree)
+{
   global $pdo; // Utilisez l'objet PDO que vous avez trouvé dans db.php
   $sql = "INSERT INTO effet (nom, description, duree) VALUES (:name, :description, :duree)"; // Requête SQL pour ajouter une potion
   $stmt = $pdo->prepare($sql); // Préparation de la requête
@@ -357,7 +380,8 @@ function createEffet($name, $description, $duree){
   return true;
 }
 
-function createIngredient($name, $propriete, $type, $rarete){
+function createIngredient($name, $propriete, $type, $rarete)
+{
   global $pdo; // Utilisez l'objet PDO que vous avez trouvé dans db.php
   $sql = "INSERT INTO ingredient (nom, propriete, type, rarete) VALUES (:name, :propriete, :type, :rarete)"; // Requête SQL pour ajouter une potion
   $stmt = $pdo->prepare($sql); // Préparation de la requête
@@ -366,28 +390,25 @@ function createIngredient($name, $propriete, $type, $rarete){
   $stmt->bindParam(':type', $type); // Liaison de la description de la potion à la requête
   $stmt->bindParam(':rarete', $rarete); // Liaison de la description de la potion à la requête
 
- 
+
   $stmt->execute(); // Exécution de la requête
   return true;
-
 }
 
-function typeIngredient(){
+function typeIngredient()
+{
   global $pdo;
   $sql = "SELECT type FROM ingredient GROUP BY type";
   $stmt = $pdo->prepare($sql);
   $stmt->execute();
   $types = $stmt->fetchAll(PDO::FETCH_ASSOC);
-  echo '<label class="form-label fw-bold"> type </label>';
+  echo '<label class="form-label fw-bold"> Type </label>';
   echo '<select class="form-control" name="type"> ';
-  echo '<option value=""> choisissez votre type </option>' ;
+  echo '<option value=""> choisissez votre type </option>';
   foreach ($types as $type) {
     echo '<option value="' . $type['type'] . '">' . $type['type'] . '</option>';
-
   }
   echo '</select>';
-
-  
 }
 
 function validateUserExists($email)
