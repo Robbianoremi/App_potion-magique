@@ -1,64 +1,5 @@
 <?php
-function displayUsers()
-{ // Fonction pour afficher les utilisateurs
-  global $pdo; // Utilisez l'objet PDO que vous avez créé dans db.php
-  $sql = "SELECT nom,email FROM utilisateur ORDER BY idutilisateur DESC"; // Requête SQL pour obtenir tous les noms d'utilisateur
-  $stmt = $pdo->prepare($sql); // Préparation de la requête
-  $stmt->execute(); // Exécution de la requête
-  $users = $stmt->fetchAll(PDO::FETCH_ASSOC); // Récupération de tous les résultats dans un tableau associatif
-  echo '<ul class="list-group">'; // Début du marquage HTML pour la liste
-  foreach ($users as $user) { // Parcours du tableau des résultats
-    echo '<li class="list-group-item">' . $user['nom'] . '<br>' . $user['email'] . '</li>'; // Affichage de chaque nom d'utilisateur ainsi que son email
-  }
-  echo '</ul>'; // Fin du marquage HTML pour la liste
-}
-function displayMagicalNiveau()
-{
-  global $pdo; // Utilisez l'objet PDO que vous avez créé dans db.php
 
-  $sql = "SELECT * FROM niveauMagie"; // Requête SQL pour obtenir tous les niveaux de magie
-
-  $stmt = $pdo->prepare($sql); // Préparation de la requête
-  $stmt->execute(); // Exécution de la requête
-  $niveaux = $stmt->fetchAll(PDO::FETCH_ASSOC); // Récupération de tous les résultats dans un tableau associatif
-  echo '<label for="niveauMagie" class="form-label fw-bold">Niveau de magie</label>'; // Étiquette pour la liste déroulante
-  echo '<select class="form-select" name="niveauMagie" id="niveauMagie" required>'; // Début du marquage HTML pour la liste déroulante
-  echo '<option value="">Choisissez un niveau de magie</option>'; // Option par défaut
-  foreach ($niveaux as $niveau) { // Parcours du tableau des résultats
-    echo '<option value="' . $niveau['idniveauMagie'] . '">' . $niveau['niveau'] . '</option>'; // Affichage de chaque niveau de magie
-  }
-  echo '</select>'; // Fin du marquage HTML pour la liste déroulante
-}
-function displayUsersAdmin()
-{ // Fonction pour afficher les utilisateurs avec leurs rôles
-  global $pdo; // Utilisez l'objet PDO que vous avez créé dans db.php
-  // Requête SQL pour obtenir tous les utilisateurs et leurs rôles
-  $sql = "SELECT utilisateur.idutilisateur, utilisateur.nom, utilisateur.email, GROUP_CONCAT(roleUtilisateur.role SEPARATOR ', ') AS roles 
-          FROM utilisateur 
-          LEFT JOIN utilisateur_has_roleUtilisateur ON utilisateur.idutilisateur = utilisateur_has_roleUtilisateur.utilisateur_idutilisateur
-          LEFT JOIN roleUtilisateur ON utilisateur_has_roleUtilisateur.roleUtilisateur_idroleUtilisateur = roleUtilisateur.idroleUtilisateur 
-          GROUP BY utilisateur.idutilisateur
-          ORDER BY utilisateur.idutilisateur DESC"; // Requête SQL pour obtenir tous les utilisateurs et leurs rôles
-  $stmt = $pdo->prepare($sql); // Préparation de la requête
-  $stmt->execute(); // Exécution de la requête
-  $users = $stmt->fetchAll(PDO::FETCH_ASSOC); // Récupération de tous les résultats dans un tableau associatif
-
-  echo '<table class="table table-striped table-hover">'; // Bootstrap classes for tables
-  echo '<thead class="thead-dark">'; // Bootstrap class for a dark table header
-  echo '<tr><th>Nom</th><th>Email</th><th>Rôles</th><th>Action</th></tr>';
-  echo '</thead>';
-  echo '<tbody class="list-user">';
-  foreach ($users as $user) {
-    echo '<tr>';
-    echo '<td>' . htmlspecialchars($user['nom']) . '</td>';
-    echo '<td>' . htmlspecialchars($user['email']) . '</td>';
-    echo '<td>' . htmlspecialchars($user['roles']) . '</td>';
-    echo '<td><a href="../controllers/deleteUser.php?id=' . $user['idutilisateur'] . '" class="btn btn-danger btn-sm">Supprimer</a></td>';
-    echo '</tr>';
-  }
-  echo '</tbody>';
-  echo '</table>';
-}
 
 function createUserAdmin($name, $email, $password, $idMagie, $role)
 { // Fonction pour ajouter un utilisateur
@@ -167,6 +108,66 @@ function addIngredient()
   echo '</select>';
 }
 
+function displayUsers()
+{ // Fonction pour afficher les utilisateurs
+  global $pdo; // Utilisez l'objet PDO que vous avez créé dans db.php
+  $sql = "SELECT nom,email FROM utilisateur ORDER BY idutilisateur DESC"; // Requête SQL pour obtenir tous les noms d'utilisateur
+  $stmt = $pdo->prepare($sql); // Préparation de la requête
+  $stmt->execute(); // Exécution de la requête
+  $users = $stmt->fetchAll(PDO::FETCH_ASSOC); // Récupération de tous les résultats dans un tableau associatif
+  echo '<ul class="list-group">'; // Début du marquage HTML pour la liste
+  foreach ($users as $user) { // Parcours du tableau des résultats
+    echo '<li class="list-group-item">' . $user['nom'] . '<br>' . $user['email'] . '</li>'; // Affichage de chaque nom d'utilisateur ainsi que son email
+  }
+  echo '</ul>'; // Fin du marquage HTML pour la liste
+}
+function displayMagicalNiveau()
+{
+  global $pdo; // Utilisez l'objet PDO que vous avez créé dans db.php
+
+  $sql = "SELECT * FROM niveauMagie"; // Requête SQL pour obtenir tous les niveaux de magie
+
+  $stmt = $pdo->prepare($sql); // Préparation de la requête
+  $stmt->execute(); // Exécution de la requête
+  $niveaux = $stmt->fetchAll(PDO::FETCH_ASSOC); // Récupération de tous les résultats dans un tableau associatif
+  echo '<label for="niveauMagie" class="form-label fw-bold">Niveau de magie</label>'; // Étiquette pour la liste déroulante
+  echo '<select class="form-select" name="niveauMagie" id="niveauMagie" required>'; // Début du marquage HTML pour la liste déroulante
+  echo '<option value="">Choisissez un niveau de magie</option>'; // Option par défaut
+  foreach ($niveaux as $niveau) { // Parcours du tableau des résultats
+    echo '<option value="' . $niveau['idniveauMagie'] . '">' . $niveau['niveau'] . '</option>'; // Affichage de chaque niveau de magie
+  }
+  echo '</select>'; // Fin du marquage HTML pour la liste déroulante
+}
+function displayUsersAdmin()
+{ // Fonction pour afficher les utilisateurs avec leurs rôles
+  global $pdo; // Utilisez l'objet PDO que vous avez créé dans db.php
+  // Requête SQL pour obtenir tous les utilisateurs et leurs rôles
+  $sql = "SELECT utilisateur.idutilisateur, utilisateur.nom, utilisateur.email, GROUP_CONCAT(roleUtilisateur.role SEPARATOR ', ') AS roles 
+          FROM utilisateur 
+          LEFT JOIN utilisateur_has_roleUtilisateur ON utilisateur.idutilisateur = utilisateur_has_roleUtilisateur.utilisateur_idutilisateur
+          LEFT JOIN roleUtilisateur ON utilisateur_has_roleUtilisateur.roleUtilisateur_idroleUtilisateur = roleUtilisateur.idroleUtilisateur 
+          GROUP BY utilisateur.idutilisateur
+          ORDER BY utilisateur.idutilisateur DESC"; // Requête SQL pour obtenir tous les utilisateurs et leurs rôles
+  $stmt = $pdo->prepare($sql); // Préparation de la requête
+  $stmt->execute(); // Exécution de la requête
+  $users = $stmt->fetchAll(PDO::FETCH_ASSOC); // Récupération de tous les résultats dans un tableau associatif
+
+  echo '<table class="table table-striped table-hover">'; // Bootstrap classes for tables
+  echo '<thead class="thead-dark">'; // Bootstrap class for a dark table header
+  echo '<tr><th>Nom</th><th>Email</th><th>Rôles</th><th>Action</th></tr>';
+  echo '</thead>';
+  echo '<tbody class="list-user">';
+  foreach ($users as $user) {
+    echo '<tr>';
+    echo '<td>' . htmlspecialchars($user['nom']) . '</td>';
+    echo '<td>' . htmlspecialchars($user['email']) . '</td>';
+    echo '<td>' . htmlspecialchars($user['roles']) . '</td>';
+    echo '<td><a href="../controllers/deleteUser.php?id=' . $user['idutilisateur'] . '" class="btn btn-danger btn-sm">Supprimer</a></td>';
+    echo '</tr>';
+  }
+  echo '</tbody>';
+  echo '</table>';
+}
 function displayRoles()
 {
   global $pdo;
@@ -209,6 +210,26 @@ function displayPotion()
   $potions = $stmt->fetchAll(PDO::FETCH_ASSOC);
   echo '<select class="form-select" name="potion" id="potion" required>'; // Début du marquage HTML pour la liste déroulante
   echo '<option value="">Choisir une potion</option>'; // Option par défaut
+  foreach ($potions as $potion) { // Parcours du tableau des résultats
+
+    echo '<option title="' . htmlspecialchars($potion['description']) . '" value="' . $potion['idpotionmagique'] . '">' . $potion['nom'] . '</option>';
+  }
+  echo '</select>';
+}
+
+function displayPotionUser($iduser) {
+  global $pdo;
+  $sql = "SELECT potionmagique.nom, GROUP_CONCAT(effet.description SEPARATOR ', ' ) AS effets
+        FROM potionmagique
+        JOIN potionmagique_has_effet ON potionmagique.idpotionmagique = potionmagique_has_effet.potionmagique_idpotionmagique
+        JOIN effet ON potionmagique_has_effet.effet_ideffet = effet.ideffet
+        WHERE utilisateur_idutilisateur = :utilisateur_idutilisateur";
+  $stmt = $pdo->prepare($sql);
+  $stmt->bindParam(':utilisateur_idutilisateur', $iduser);
+  $stmt->execute();
+  $potions = $stmt->fetchAll(PDO::FETCH_ASSOC);
+  echo '<select class="form-select" name="potion" id="potion" required>'; // Début du marquage HTML pour la liste déroulante
+  echo '<option value="">Vos potion</option>'; // Option par défaut
   foreach ($potions as $potion) { // Parcours du tableau des résultats
 
     echo '<option title="' . htmlspecialchars($potion['description']) . '" value="' . $potion['idpotionmagique'] . '">' . $potion['nom'] . '</option>';
